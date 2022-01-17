@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="manifest" href="./manifest.webmanifest">
+
+    <title>FH Training</title>
+</head>
+<body>
+
+    <div id="app">
+        <div id="opensidemenu">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="sidemenu">
+            <span id="closesidemenu">X</span>
+
+            <div class="sidenavcontent" id="menu">
+                <h3>Menu</h3>
+            <a href="#sum">Summen schätzen</a>
+            <a href="#percent">Prozente schätzen</a>
+            <a href="#menu=settings">Einstellungen</a>
+        </div>
+            <div class="sidenavcontent" id="settings">
+                <h3>Menu</h3>
+            <a href="#sum">BLABLABLA</a>
+            <a href="#percent">BLABLABLA</a>
+        </div>
+        </div>
+        <div class="main">
+            <!-- <form> -->
+                <!-- <span id="questionsremaining">5</span> -->
+                <div class="timerWrapper">
+                    <div id="timerfull"></div>
+                </div>
+            <div class="section" id="question">
+
+                <span class="task" id="question">
+                     ?
+                </span>
+            </div>
+            <div class="section" id="answers">
+                <span class="answerBox"></span>
+                <span class="answerBox"></span>
+                <span class="answerBox"></span>
+                <span class="answerBox"></span>
+                <span class="answerBox"></span>
+            </div>
+        <!-- </form> -->
+        </div>
+
+    </div>
+</body>
+<script src="./genQuestion.js"></script>
+<script src="./estimatepercent.js"></script>
+<script src="./ui/interface.js"></script>
+<script src="./ui/sidenav.js"></script>
+<script>
+    const eventtyp = eventType();
+    // var sidemenu = sidemenu();
+    const sidemenu = SideNav();
+    var openMenuBtn = document.querySelector("#opensidemenu");
+    var closeMenuBtn = document.querySelector("#closesidemenu");
+    openMenuBtn.addEventListener(eventtyp.click, sidemenu.toggle);
+    closeMenuBtn.addEventListener(eventtyp.click, sidemenu.toggle);
+    sidemenu.setContent("menu");
+    sidemenu.render();
+
+    var gameflow = new Controller();
+    gameflow.quizShouldPause = false;
+/* 
+    function sidemenu() {
+         var sidemenu = document.querySelector(".sidemenu");
+         var sideMenuIsOpen = false;
+
+         const opensidemenu = () => {
+             sidemenu.classList.add("open");
+             sideMenuIsOpen = true;
+             gameflow.publish("stopQuiz");
+
+         }
+         const closesidemenu = () => {
+             sidemenu.classList.remove("open");
+             gameflow.quizShouldPause = false;
+             sideMenuIsOpen = false;
+
+         }
+         return {
+             toggle: () => {
+                 sideMenuIsOpen ? closesidemenu() : opensidemenu()
+             },
+             close: () => {
+                 closesidemenu()
+             },
+             open: () => {
+                 opensidemenu()
+             }
+         }
+
+    } */
+
+
+    const log = console.log;
+
+    
+    var questionIF = new Question(gameflow);
+    questionIF.setQuestionType("sum")
+    questionIF.setDifficutly(1)
+
+    var timer = new Timer(gameflow);
+    gameflow.register("newRound", startQuiz)
+    gameflow.register("stopQuiz", pauseQuiz)
+    // gameflow.register(()=> {log(timer.time)})
+    // startQuiz();
+
+/*     gameflow.register(questionIF);
+    gameflow.register(timer); */
+
+    function startQuiz() {
+        if (gameflow.quizShouldPause) {
+            return;
+        }
+        timer.reset();
+        setTimeout(() => {
+    questionIF.nextQuestion();
+    questionIF.render();
+    
+    timer.start()
+}, 2500);
+
+    }
+
+    function pauseQuiz() {
+        gameflow.quizShouldPause = true;
+    }
+
+    
+    
+
+    (function handleHash() {
+        window.addEventListener("hashchange", (ev) => {
+            sidemenu.close();
+            var hashValue = location.hash.split("#")[1];
+            var menu = hashValue.split("=");
+            if (menu[0] === "menu") {
+                sidemenu.setContent(menu[1]);
+                sidemenu.render();
+                return;
+            }
+            questionIF.setQuestionType(hashValue);
+            gameflow.publish("newRound");
+        })
+    })()
+
+
+    
+    </script>
+    <script src="./registersw.js" defer></script>
+</html>
