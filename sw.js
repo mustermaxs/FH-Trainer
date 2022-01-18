@@ -1,13 +1,13 @@
 var CACHE_NAME = "fhtrainer-cache-v0";
 var CACHED_URLS = [
-  "./index.html",
-  "./icon/icon.png",
-  "./ui/estimateSum.js",
-  "./ui/interface.js",
-  "./estimatepercent.js",
-  "./sw.js",
-  "./css/main.css",
-  "./manifest.webmanifest",
+  "/fh/index.html",
+  "/fh/icon/icon.png",
+  "/fh/ui/estimateSum.js",
+  "/fh/ui/interface.js",
+  "/fh/estimatepercent.js",
+  "/fh/sw.js",
+  "/fh/css/main.css",
+  "/fh/manifest.webmanifest",
 ];
 
 self.addEventListener("install", function (event) {

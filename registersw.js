@@ -62,6 +62,8 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("sw.js").then(() => {});
+    navigator.serviceWorker
+      .register("http://localhost:8080/fh/sw.js")
+      .then(() => {});
   });
 }

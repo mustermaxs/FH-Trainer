@@ -12,27 +12,38 @@
 </head>
 <body>
 
-    <div id="app">
+    <div id="appcontainer">
         <div id="opensidemenu">
             <div></div>
             <div></div>
             <div></div>
         </div>
         <div class="sidemenu">
-            <span id="closesidemenu">X</span>
+            <span id="closesidemenu">&#10006;</span>
 
             <div class="sidenavcontent" id="menu">
                 <h3>Menu</h3>
-            <a href="#sum">Summen schätzen</a>
-            <a href="#percent">Prozente schätzen</a>
+            <a href="#quiz=sum">Summen schätzen</a>
+            <a href="#quiz=percent">Prozente schätzen</a>
             <a href="#menu=settings">Einstellungen</a>
         </div>
             <div class="sidenavcontent" id="settings">
+                <a href="#menu=menu" id="backToMainMenu">&#8592;</a>
                 <h3>Menu</h3>
-            <a href="#sum">BLABLABLA</a>
-            <a href="#percent">BLABLABLA</a>
+            <div class="settingswrapper">
+
+                <div class="menusection">
+                <label for="setTime">Zeit</label>
+                <input min="0" max="20" data-target="settings"  type="range" name="time" id="setTime">
+                <div class="rangedisplaywrapper">
+                <span class="rangedisplay" id="time">12</span>
+            </div>
+            </div>
+
+            </div>
         </div>
         </div>
+        <div id="app">
         <div class="main">
             <!-- <form> -->
                 <!-- <span id="questionsremaining">5</span> -->
@@ -54,16 +65,18 @@
             </div>
         <!-- </form> -->
         </div>
-
+    </div>
     </div>
 </body>
 <script src="./genQuestion.js"></script>
+<script src="./settings.js"></script>
 <script src="./estimatepercent.js"></script>
 <script src="./ui/interface.js"></script>
 <script src="./ui/sidenav.js"></script>
 <script>
     const eventtyp = eventType();
-    // var sidemenu = sidemenu();
+    var gameflow = new Controller();
+    var timer = new Timer(gameflow);
     const sidemenu = SideNav();
     var openMenuBtn = document.querySelector("#opensidemenu");
     var closeMenuBtn = document.querySelector("#closesidemenu");
@@ -71,8 +84,7 @@
     closeMenuBtn.addEventListener(eventtyp.click, sidemenu.toggle);
     sidemenu.setContent("menu");
     sidemenu.render();
-
-    var gameflow = new Controller();
+    
     gameflow.quizShouldPause = false;
 /* 
     function sidemenu() {
@@ -113,9 +125,12 @@
     questionIF.setQuestionType("sum")
     questionIF.setDifficutly(1)
 
-    var timer = new Timer(gameflow);
+    
     gameflow.register("newRound", startQuiz)
-    gameflow.register("stopQuiz", pauseQuiz)
+    gameflow.register("newRound", sidemenu.close)
+    gameflow.register("stopQuiz", pauseQuiz);
+
+    
     // gameflow.register(()=> {log(timer.time)})
     // startQuiz();
 
@@ -140,23 +155,67 @@
         gameflow.quizShouldPause = true;
     }
 
-    
-    
-
     (function handleHash() {
-        window.addEventListener("hashchange", (ev) => {
-            sidemenu.close();
-            var hashValue = location.hash.split("#")[1];
-            var menu = hashValue.split("=");
-            if (menu[0] === "menu") {
-                sidemenu.setContent(menu[1]);
-                sidemenu.render();
-                return;
+        // set initial hash-values on first page load
+        window.location.hash = "#menu=menu";
+
+        var previousQueries = {
+            menu: "",
+            quizType: "",
+        };
+
+        const getQueries = (hash) => {
+                var queryTypePattern = /([a-z]+)=/
+                var queryPattern = /=([a-z]+)/
+
+                var queryType = hash.match(queryTypePattern);
+                var query = hash.match(queryPattern);
+                return {
+                    ref: queryType[1],
+                    query: query[1],
+                }
             }
-            questionIF.setQuestionType(hashValue);
-            gameflow.publish("newRound");
-        })
+        const compareQueries = (queries) => {
+            if (previousQueries.menu !== queries.menu) {
+                previousQueries.menu = queries.menu;
+                sidemenu.setContent(queries.menu);
+            }
+            if (previousQueries.quizType !== queries.quizType) {
+                previousQueries.quizType = queries.quizType;
+                questionIF.setQuestionType(queries.quizType);
+                gameflow.publish("newRound");
+            }
+       }
+       const reactToQuery = (queries) => {
+                switch (queries.ref) {
+                    case "menu":
+                        sidemenu.setContent(queries.query);
+    
+                        break;
+                    case "quiz":
+                        questionIF.setQuestionType(queries.query);
+                        // questionIF.render()
+                        gameflow.publish("newRound")
+                        break;
+                    default:
+                        break;
+                }
+            }
+       const replaceHash = (queries) => {
+        var newHashValueForURL = `#menu=${queries.menu}&quiz=${queries.quizType}`;
+        window.location.hash = newHashValueForURL;
+       }
+        window.addEventListener("hashchange", (ev) => {
+            ev.preventDefault();
+            var hashValue = location.hash.split("#")[1];
+            var queries = getQueries(hashValue);
+            // compareQueries(queries)
+            reactToQuery(queries)
+            // replaceHash(queries);
+        });
+
     })()
+
 
 
     

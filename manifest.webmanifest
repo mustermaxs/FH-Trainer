@@ -11,6 +11,6 @@
         "type": "image/png"
       }
     ],
-    "start_url": "http://localhost:8080/fh/index.html",
+    "start_url": "https://mustermaxs.github.io/FH-Trainer/",
     "orientation": "portrait"
   }

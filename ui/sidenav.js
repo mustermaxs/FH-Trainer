@@ -2,7 +2,7 @@
   constructor() {
     this.sideNavDOM = document.querySelector(".sidemenu");
 
-    this.sideNavIsOpen = false;
+    this.isOpen = false;
   }
   open() {
     //
@@ -37,21 +37,25 @@
 } */
 
 function SideNav() {
+  const settings = HandleSettings({ timer: timer });
   const sideNavDOM = document.querySelector(".sidemenu");
-  var menuContent = "menu";
+  var content;
 
-  var sideNavIsOpen = false;
+  var isOpen = false;
 
   const open = () => {
+    setContent("menu");
+    render();
     sideNavDOM.classList.add("open");
-    sideNavIsOpen = true;
+    isOpen = true;
   };
   const close = () => {
     sideNavDOM.classList.remove("open");
-    sideNavIsOpen = false;
+
+    isOpen = false;
   };
 
-  const render = (content) => {
+  const render = () => {
     document.querySelectorAll(".sidenavcontent").forEach((sidenavcontent) => {
       if (sidenavcontent.id !== content) {
         sidenavcontent.style.display = "none";
@@ -61,13 +65,36 @@ function SideNav() {
     });
   };
 
-  const setContent = (content) => {
-    menuContent = content;
+  const setContent = (contentName) => {
+    content = contentName;
+    window.location.href = "#menu=" + content;
+    render();
   };
+
+  const displayInput = (inputElem) => {
+    var value = inputElem.value;
+    var displayID = "#" + inputElem.name;
+    document.querySelector(displayID).textContent = value;
+  };
+
+  const setUpSettingsListeners = () => {
+    document.querySelectorAll('[data-target="settings"]').forEach((input) => {
+      input.addEventListener("input", (ev) => {
+        var inputElem = ev.target;
+        displayInput(inputElem);
+        settings.setTime(inputElem.value);
+      });
+    });
+  };
+  setUpSettingsListeners();
+
+  document.querySelector("#app").addEventListener(eventtyp.click, () => {
+    isOpen ? close() : null;
+  });
 
   return {
     toggle: () => {
-      sideNavIsOpen ? close() : open();
+      isOpen ? close() : open();
     },
     open: () => {
       open();
@@ -78,8 +105,9 @@ function SideNav() {
     render: () => {
       render();
     },
-    setContent: (content) => {
-      setContent(content);
+    setContent: (contentName) => {
+      setContent(contentName);
     },
+    isOpen: isOpen,
   };
 }

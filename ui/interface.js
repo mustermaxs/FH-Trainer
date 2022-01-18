@@ -20,9 +20,9 @@ class Question {
       case questionType === "sum":
         this.questionData = estimateSum();
         break;
-      default:
+      case questionType === "percent":
         this.questionData = estimatePercent();
-
+      default:
         break;
     }
   }
@@ -129,8 +129,8 @@ class Timer {
     this.timerprogressDOM = document.querySelector("#timerfull");
   }
 
-  get time() {
-    return this.availableTimeSeconds - this.timePastSeconds;
+  set time(availableTimeSeconds) {
+    this.availableTimeSeconds = availableTimeSeconds;
   }
 
   start() {
@@ -141,8 +141,8 @@ class Timer {
 
     this.cycle = setInterval(() => {
       if (
-        this.timePastSeconds === this.availableTimeSeconds &&
-        !this.gameflow.answerSubmitted
+        this.timePastSeconds == this.availableTimeSeconds &&
+        this.gameflow.answerSubmitted === false
       ) {
         console.log("CYCLE ");
         // this.reset();
@@ -235,21 +235,41 @@ function eventType() {
 function Controller() {
   //
   var pubsubList = [];
-  var register = (topic, foo) => {
-    var newTopicObj = {};
-    newTopicObj.topic = topic;
-    newTopicObj.foos = [];
-    newTopicObj.foos.push(foo);
-    pubsubList.push(newTopicObj);
-  };
-  var publish = (topic) => {
+
+  const getTopicObj = (topic) => {
     for (var i = 0; i < pubsubList.length; i++) {
+      if (pubsubList[i].topic === topic) {
+        return i;
+      }
+    }
+    return false;
+  };
+
+  var register = (topic, foo) => {
+    var topicIndex = getTopicObj(topic);
+    if (topicIndex === false) {
+      var newTopicObj = {};
+      newTopicObj.topic = topic;
+      newTopicObj.foos = [];
+      pubsubList.push(newTopicObj);
+      topicIndex = pubsubList.length - 1;
+    }
+    pubsubList[topicIndex].foos.push(foo);
+    console.log(pubsubList);
+  };
+
+  var publish = (topic) => {
+    var topicIndex = getTopicObj(topic);
+    pubsubList[topicIndex].foos.forEach((foo) => {
+      foo();
+    });
+    /*     for (var i = 0; i < pubsubList.length; i++) {
       if (pubsubList[i].topic == topic) {
         pubsubList[i].foos.forEach((foo) => {
           foo();
         });
       }
-    }
+    } */
   };
 
   return {
