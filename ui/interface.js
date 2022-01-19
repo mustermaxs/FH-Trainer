@@ -1,4 +1,4 @@
-class Question {
+class Quiz {
   constructor(gameflow) {
     this.gameflow = gameflow;
     this.eventtyp = eventType();
@@ -19,10 +19,15 @@ class Question {
     switch (true) {
       case questionType === "sum":
         this.questionData = estimateSum();
+        this.questionTypeSet = true;
         break;
       case questionType === "percent":
         this.questionData = estimatePercent();
+        this.questionTypeSet = true;
+        break;
       default:
+        this.questionData = null;
+        this.questionTypeSet = false;
         break;
     }
   }
@@ -33,6 +38,14 @@ class Question {
 
   nextQuestion() {
     this.questionData.newQuestion();
+  }
+
+  get questionIsSet() {
+    return this.questionTypeSet;
+  }
+
+  resetQuiz() {
+    this.setQuestionType();
   }
 
   removeChildElements(parentNode) {
@@ -141,18 +154,22 @@ class Timer {
 
     this.cycle = setInterval(() => {
       if (
-        this.timePastSeconds == this.availableTimeSeconds &&
+        this.timePastSeconds >= this.availableTimeSeconds &&
         this.gameflow.answerSubmitted === false
       ) {
         console.log("CYCLE ");
-        // this.reset();
+        this.reset();
         this.gameflow.publish("newRound");
       }
-      this.timePastSeconds += 1;
-    }, 1000);
+      this.render();
+      this.timePastSeconds += 0.1;
+    }, 100);
   }
   stop() {
     //
+  }
+  get percentage() {
+    return Math.round((this.timePastSeconds / this.availableTimeSeconds) * 100);
   }
   reset() {
     clearInterval(this.cycle);
@@ -166,18 +183,8 @@ class Timer {
       this.availableTimeSeconds
     );
     this.timerprogressDOM.style.width = `${this.progress}%`; */
-    if (this.timerIsStopped) {
-      setTimeout(() => {
-        this.timerprogressDOM.className = "timer active";
-        this.timerprogressDOM.style.transition = `width ${this.availableTimeSeconds}s linear`;
-      }, 100);
-      //   this.timerIsStopped = false;
-      return;
-    }
-    this.timerprogressDOM.className = "timer";
-    this.timerprogressDOM.style.transition = `width 0s linear`;
-    // this.timerprogressDOM.style.style = `0%`;
-    // this.timerIsStopped = true;
+
+    this.timerprogressDOM.style.width = `${this.percentage}%`;
   }
 }
 
@@ -235,6 +242,7 @@ function eventType() {
 function Controller() {
   //
   var pubsubList = [];
+  this.quizShouldPause = false;
 
   const getTopicObj = (topic) => {
     for (var i = 0; i < pubsubList.length; i++) {
@@ -277,10 +285,10 @@ function Controller() {
       register(topic, foo);
     },
     publish: (topic) => {
-      if (this.quizShouldPause && topic === "newRound") {
-        return;
+      if (!this.quizShouldPause && topic === "newRound") {
+        publish(topic);
       }
-      publish(topic);
+      return;
     },
   };
 }

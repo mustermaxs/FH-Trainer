@@ -108,9 +108,10 @@ body {
     background-color: #04b604;
     border-radius: 8px;
     border: none;
-    height: 1rem; }
+    height: 1rem;
+    transition: width 100ms linear; }
     .timerWrapper #timerfull.active {
-      width: 100%;
+      width: 0%;
       height: 1rem; }
 
 #questionsremaining {
@@ -135,7 +136,7 @@ body {
   background-color: white;
   overflow: hidden;
   transition: width 300ms ease-in-out;
-  z-index: 2; }
+  z-index: 3; }
   .sidemenu #closesidemenu {
     color: black;
     position: absolute;
@@ -155,11 +156,12 @@ body {
     color: black;
     font-size: 1.1rem;
     line-height: 2rem;
-    transition: transform 150ms; }
+    transition: transform 150ms;
+    width: 30rem; }
     .sidemenu a:hover {
       transform: scale(102%); }
   .sidemenu.open {
-    width: 80%; }
+    width: 30%; }
 
 #opensidemenu {
   display: block;
@@ -239,5 +241,28 @@ body {
     top: -0.4rem;
     z-index: 5;
     content: ""; }
+
+.confirmwindow {
+  display: none;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  height: 8rem;
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  border-radius: 5px;
+  border: transparent;
+  box-shadow: 0px 0px 4px gray;
+  z-index: 2; }
+  .confirmwindow span {
+    display: block; }
+  .confirmwindow button {
+    background-color: #9233ff;
+    outline: transparent;
+    border-radius: 5px;
+    border: transparent;
+    color: white;
+    padding: 0.5rem 1rem; }
 
 /*# sourceMappingURL=main.css.map */

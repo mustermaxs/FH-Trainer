@@ -45,7 +45,6 @@ function SideNav() {
 
   const open = () => {
     setContent("menu");
-    render();
     sideNavDOM.classList.add("open");
     isOpen = true;
   };
@@ -68,7 +67,6 @@ function SideNav() {
   const setContent = (contentName) => {
     content = contentName;
     window.location.href = "#menu=" + content;
-    render();
   };
 
   const displayInput = (inputElem) => {
@@ -113,7 +111,10 @@ function SideNav() {
     },
     setContent: (contentName) => {
       setContent(contentName);
+      render();
     },
-    isOpen: isOpen,
+    isOpen: () => {
+      return isOpen;
+    },
   };
 }

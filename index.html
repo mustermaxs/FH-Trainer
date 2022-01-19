@@ -45,6 +45,10 @@
         </div>
         <div id="app">
         <div class="main">
+            <div class="confirmwindow" id="startprompt">
+                <span>Ready?</span>
+                <button id="confirm">Start!</button>
+            </div>
             <!-- <form> -->
                 <!-- <span id="questionsremaining">5</span> -->
                 <div class="timerWrapper">
@@ -73,6 +77,7 @@
 <script src="./estimatepercent.js"></script>
 <script src="./ui/interface.js"></script>
 <script src="./ui/sidenav.js"></script>
+<script src="./ui/popup.js"></script>
 <script>
     const eventtyp = eventType();
     var gameflow = new Controller();
@@ -84,6 +89,7 @@
     closeMenuBtn.addEventListener(eventtyp.click, sidemenu.toggle);
     sidemenu.setContent("menu");
     sidemenu.render();
+    const startwindow = Confirm({path: document.querySelector(".confirmwindow"), onConfirm: onConfirm})
     
     gameflow.quizShouldPause = false;
 /* 
@@ -116,35 +122,37 @@
          }
 
     } */
-
+    function onConfirm() {
+        startwindow.hide();
+        gameflow.quizShouldPause = false;
+        startQuiz();
+    }
 
     const log = console.log;
 
     
-    var questionIF = new Question(gameflow);
-    questionIF.setQuestionType("sum")
-    questionIF.setDifficutly(1)
+    var quizIF = new Quiz(gameflow);
+    quizIF.setQuestionType("sum")
+    quizIF.setDifficutly(1)
 
+    var gameIteration
     
+    // gameflow.register("newRound", sidemenu.close)
     gameflow.register("newRound", startQuiz)
-    gameflow.register("newRound", sidemenu.close)
-    gameflow.register("stopQuiz", pauseQuiz);
+    // gameflow.register("stopquiz", () => {gameflow.quizShouldPause = true})
 
-    
-    // gameflow.register(()=> {log(timer.time)})
-    // startQuiz();
-
-/*     gameflow.register(questionIF);
-    gameflow.register(timer); */
 
     function startQuiz() {
-        if (gameflow.quizShouldPause) {
-            return;
+        // timer.reset();
+        if (sidemenu.isOpen()) {
+            gameflow.quizShouldPause = true
+            timer.reset();
+
+            return
         }
-        timer.reset();
-        setTimeout(() => {
-    questionIF.nextQuestion();
-    questionIF.render();
+        gameIteration = setTimeout(() => {
+    quizIF.nextQuestion();
+    quizIF.render();
     
     timer.start()
 }, 2500);
@@ -182,7 +190,7 @@
             }
             if (previousQueries.quizType !== queries.quizType) {
                 previousQueries.quizType = queries.quizType;
-                questionIF.setQuestionType(queries.quizType);
+                quizIF.setQuestionType(queries.quizType);
                 gameflow.publish("newRound");
             }
        }
@@ -190,12 +198,16 @@
                 switch (queries.ref) {
                     case "menu":
                         sidemenu.setContent(queries.query);
-    
+
                         break;
                     case "quiz":
-                        questionIF.setQuestionType(queries.query);
-                        // questionIF.render()
-                        gameflow.publish("newRound")
+                        quizIF.setQuestionType(queries.query);
+                        startwindow.show();
+                        sidemenu.close();
+                        
+                        // quizIF.render()
+                        // gameflow.publish("newRound")
+
                         break;
                     default:
                         break;
@@ -220,5 +232,5 @@
 
     
     </script>
-    <script src="./registersw.js" defer></script>
+    <!-- <script src="./registersw.js" defer></script> -->
 </html>
