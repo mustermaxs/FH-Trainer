@@ -74,7 +74,13 @@ function SideNav() {
   const displayInput = (inputElem) => {
     var value = inputElem.value;
     var displayID = "#" + inputElem.name;
+
     document.querySelector(displayID).textContent = value;
+    if (value < 10) {
+      document.querySelector(displayID).style.marginRight = "0.2rem";
+      return;
+    }
+    document.querySelector(displayID).style.marginRight = "0rem";
   };
 
   const setUpSettingsListeners = () => {
