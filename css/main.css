@@ -161,7 +161,7 @@ body {
     .sidemenu a:hover {
       transform: scale(102%); }
   .sidemenu.open {
-    width: 30%; }
+    width: 80%; }
 
 #opensidemenu {
   display: block;
