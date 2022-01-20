@@ -143,8 +143,8 @@
 
 
     function startQuiz() {
-        // timer.reset();
-        if (sidemenu.isOpen()) {
+        timer.reset();
+        if (sidemenu.isOpen() || gameflow.quizShouldPause) {
             gameflow.quizShouldPause = true
             timer.reset();
 
