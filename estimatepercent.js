@@ -27,8 +27,8 @@ function estimatePercent() {
 
     var answersList = genAnswers({
       solution: solution,
-      minError: 95,
-      maxError: 200,
+      minError: 75,
+      maxError: 99,
       roundSolution: "decimal",
     });
     data.answersList = answersList;

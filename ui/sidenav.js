@@ -40,10 +40,14 @@ function SideNav() {
   const settings = HandleSettings({ timer: timer });
   const sideNavDOM = document.querySelector(".sidemenu");
   var content;
+  var onOpenCallback;
 
   var isOpen = false;
 
   const open = () => {
+    if (onOpenCallback) {
+      onOpenCallback();
+    }
     setContent("menu");
     sideNavDOM.classList.add("open");
     isOpen = true;
@@ -115,6 +119,9 @@ function SideNav() {
     },
     isOpen: () => {
       return isOpen;
+    },
+    onOpen: (callback) => {
+      onOpenCallback = callback;
     },
   };
 }

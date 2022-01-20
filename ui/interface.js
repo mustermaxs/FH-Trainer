@@ -83,6 +83,9 @@ class Quiz {
     this.componentsBuilt().then(() => {
       document.querySelectorAll(".answerBox").forEach((answerBox) => {
         answerBox.addEventListener(this.eventtyp.click, (ev) => {
+          if (this.gameflow.timeIsUp) {
+            return;
+          }
           this.gameflow.answerSubmitted = true;
           if (!this.answerIsCorrect(ev.target.value)) {
             ev.target.classList.add("wrong");
@@ -150,12 +153,18 @@ class Timer {
     //
     // this.reset();
     this.timerIsStopped = true;
+    this.gameflow.timeIsUp = false;
     this.render();
 
     this.cycle = setInterval(() => {
-      if (this.timePastSeconds >= this.availableTimeSeconds) {
+      if (
+        this.timePastSeconds >= this.availableTimeSeconds &&
+        !this.gameflow.answerSubmitted
+      ) {
+        this.gameflow.timeIsUp = true;
         console.log("CYCLE ");
-        this.reset();
+        console.log("av.time: " + this.availableTimeSeconds);
+        // this.reset();
         this.gameflow.publish("newRound");
       } else {
         this.render();
@@ -241,6 +250,7 @@ function Controller() {
   //
   var pubsubList = [];
   this.quizShouldPause = false;
+  this.timeIsUp;
 
   const getTopicObj = (topic) => {
     for (var i = 0; i < pubsubList.length; i++) {
@@ -283,10 +293,7 @@ function Controller() {
       register(topic, foo);
     },
     publish: (topic) => {
-      if (!this.quizShouldPause && topic === "newRound") {
-        publish(topic);
-      }
-      return;
+      publish(topic);
     },
   };
 }

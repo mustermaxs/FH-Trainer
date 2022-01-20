@@ -91,6 +91,7 @@
     closeMenuBtn.addEventListener(eventtyp.click, sidemenu.toggle);
     sidemenu.setContent("menu");
     sidemenu.render();
+    sidemenu.onOpen(resetQuiz)
     const startwindow = Confirm({path: document.querySelector(".confirmwindow"), onConfirm: onConfirm})
     
     gameflow.quizShouldPause = false;
@@ -146,11 +147,12 @@
 
     function startQuiz() {
         timer.reset();
-        if (sidemenu.isOpen() || gameflow.quizShouldPause) {
+/*         if (sidemenu.isOpen()) {
+            log("sidemenu open: "+sidemenu.isOpen())
             gameflow.quizShouldPause = true
             timer.reset();
             return
-        }
+        } */
         gameIteration = setTimeout(() => {
     quizIF.nextQuestion();
     quizIF.render();
@@ -160,8 +162,9 @@
 
     }
 
-    function pauseQuiz() {
-        gameflow.quizShouldPause = true;
+    function resetQuiz() {
+        quizIF.resetQuiz()
+        timer.reset()
     }
 
     (function handleHash() {
