@@ -153,10 +153,7 @@ class Timer {
     this.render();
 
     this.cycle = setInterval(() => {
-      if (
-        this.timePastSeconds >= this.availableTimeSeconds ||
-        this.gameflow.answerSubmitted
-      ) {
+      if (this.timePastSeconds >= this.availableTimeSeconds) {
         console.log("CYCLE ");
         this.reset();
         this.gameflow.publish("newRound");
