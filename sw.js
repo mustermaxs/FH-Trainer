@@ -1,9 +1,14 @@
 var CACHE_NAME = "fhtrainer-cache-v0";
 var CACHED_URLS = [
   "/fh/index.html",
+  //   "/fh/ui/popup.js",
+  //   "/fh/ui/timer.js",
+  //   "/fh/ui/eventtyp.js",
+  //   "/fh/controller.js",
+  "/fh/main.js",
   "/fh/icon/icon.png",
   "/fh/ui/estimateSum.js",
-  "/fh/ui/interface.js",
+  //   "/fh/ui/interface.js",
   "/fh/estimatepercent.js",
   "/fh/sw.js",
   "/fh/css/main.css",

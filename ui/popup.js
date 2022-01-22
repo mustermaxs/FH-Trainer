@@ -1,4 +1,7 @@
-function Confirm(config) {
+import { eventType } from "./eventtyp.js";
+
+export function Confirm(config) {
+  const eventtyp = new eventType();
   const jsPath = config.path;
   const confirmBtn = document.querySelector(
     `#${jsPath.id} > button[id=confirm]`

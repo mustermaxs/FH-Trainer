@@ -1,7 +1,15 @@
-class Quiz {
+import { Timer } from "./timer.js";
+import { eventType } from "./eventtyp.js";
+import { SideNav } from "./sidenav.js";
+import { Confirm } from "./popup.js";
+export { Timer };
+export { eventType };
+export { SideNav };
+export { Confirm };
+export class Quiz {
   constructor(gameflow) {
     this.gameflow = gameflow;
-    this.eventtyp = eventType();
+    this.eventtyp = new eventType();
     this.getQuestionTypes;
     this.answerSection = document.querySelector("#answers");
     this.questionSection = document.querySelector("#question");
@@ -133,90 +141,6 @@ class Quiz {
   }
 }
 
-class Timer {
-  constructor(gameflow) {
-    this.gameflow = gameflow;
-    this.progress;
-    this.timerIsStopped = true;
-    this.availableTimeSeconds = 10;
-    this.timePastSeconds = 0;
-    this.timeRemainingSeconds = 0;
-    this.timePercentage = 0;
-    this.timerprogressDOM = document.querySelector("#timerfull");
-  }
-
-  set time(availableTimeSeconds) {
-    this.availableTimeSeconds = availableTimeSeconds;
-  }
-
-  start() {
-    //
-    // this.reset();
-    this.timerIsStopped = true;
-    this.gameflow.timeIsUp = false;
-    this.render();
-
-    this.cycle = setInterval(() => {
-      if (
-        this.timePastSeconds >= this.availableTimeSeconds &&
-        !this.gameflow.answerSubmitted
-      ) {
-        this.gameflow.timeIsUp = true;
-        console.log("CYCLE ");
-        console.log("av.time: " + this.availableTimeSeconds);
-        // this.reset();
-        this.gameflow.publish("newRound");
-      } else {
-        this.render();
-        this.timePastSeconds += 0.1;
-      }
-    }, 100);
-  }
-  stop() {
-    //
-  }
-  get percentage() {
-    return Math.round((this.timePastSeconds / this.availableTimeSeconds) * 100);
-  }
-  reset() {
-    clearInterval(this.cycle);
-    this.timerIsStopped = !this.timerIsStopped;
-    this.timePastSeconds = 0;
-    this.render();
-  }
-  render() {
-    /*     this.progress = getPercentage(
-      this.timePastSeconds,
-      this.availableTimeSeconds
-    );
-    this.timerprogressDOM.style.width = `${this.progress}%`; */
-
-    this.timerprogressDOM.style.width = `${this.percentage}%`;
-  }
-}
-
-function eventType() {
-  this.isMobile =
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-
-  var click = this.isMobile ? "touchstart" : "click";
-  var down = this.isMobile ? "touchstart" : "mousedown";
-  var up = this.isMobile ? "touchend" : "mouseup";
-  var move = this.isMobile ? "touchmove" : "mousemove";
-
-  return {
-    click: click,
-    down: down,
-    up: up,
-    move: move,
-    positionX: (ev) => {
-      return this.isMobile ? ev.touches[0].clientX : ev.pageX;
-    },
-  };
-}
-
 /* function GameFlow() {
   this.registeredComponents = [];
   this.questionCounter = 0;
@@ -246,7 +170,8 @@ function eventType() {
   };
 } */
 
-function Controller() {
+function HandleAnswers() {}
+export function Controller() {
   //
   var pubsubList = [];
   this.quizShouldPause = false;
@@ -280,12 +205,12 @@ function Controller() {
       foo();
     });
     /*     for (var i = 0; i < pubsubList.length; i++) {
-      if (pubsubList[i].topic == topic) {
-        pubsubList[i].foos.forEach((foo) => {
-          foo();
-        });
-      }
-    } */
+          if (pubsubList[i].topic == topic) {
+            pubsubList[i].foos.forEach((foo) => {
+              foo();
+            });
+          }
+        } */
   };
 
   return {
@@ -297,5 +222,3 @@ function Controller() {
     },
   };
 }
-
-function HandleAnswers() {}

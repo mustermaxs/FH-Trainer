@@ -1,43 +1,9 @@
-/* class SideNav {
-  constructor() {
-    this.sideNavDOM = document.querySelector(".sidemenu");
+// import { HandleSettings } from "../settings.js";
 
-    this.isOpen = false;
-  }
-  open() {
-    //
-  }
-  close() {
-    //
-  }
-  toggle() {}
-
-  getContent() {
-     switch(content) {
-            case "menu":
-                this.
-                break;
-            case "settings":
-                this.content = sideNavContent.settings;
-                break;
-            default:
-                //show menu
-        } 
-  }
-
-  render(content) {
-    document.querySelectorAll(".sidenavcontent").forEach((sidenavcontent) => {
-      if (sidenavcontent.id !== content) {
-        sidenavcontent.style.display = "none";
-        return;
-      }
-      sidenavcontent.style.display = "block";
-    });
-  }
-} */
-
-function SideNav() {
-  const settings = HandleSettings({ timer: timer });
+export function SideNav(components, getEventType) {
+  const eventtyp = getEventType;
+  //   const settings = HandleSettings({ timer: timer });
+  const timer = components.timer;
   const sideNavDOM = document.querySelector(".sidemenu");
   var content;
   var onOpenCallback;
@@ -90,7 +56,7 @@ function SideNav() {
       input.addEventListener("input", (ev) => {
         var inputElem = ev.target;
         displayInput(inputElem);
-        settings.setTime(inputElem.value);
+        timer.time = parseInt(inputElem.value);
       });
     });
   };
