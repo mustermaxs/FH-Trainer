@@ -1,9 +1,15 @@
-// import { HandleSettings } from "../settings.js";
+import { HandleSettings } from "./settings.js";
 
 export function SideNav(components, getEventType) {
+  const menuOpenEvent = new CustomEvent("menuOpened");
+  const menuCloseEvent = new CustomEvent("menuClosed");
+  var inputElems = {};
+
   const eventtyp = getEventType;
   //   const settings = HandleSettings({ timer: timer });
   const timer = components.timer;
+  const quiz = components.quiz;
+  const settings = HandleSettings({ timer: timer, quiz: quiz });
   const sideNavDOM = document.querySelector(".sidemenu");
   var content;
   var onOpenCallback;
@@ -11,16 +17,17 @@ export function SideNav(components, getEventType) {
   var isOpen = false;
 
   const open = () => {
-    if (onOpenCallback) {
-      onOpenCallback();
-    }
+    // dispatch open event
+    document.dispatchEvent(menuOpenEvent);
     setContent("menu");
     sideNavDOM.classList.add("open");
     isOpen = true;
   };
   const close = () => {
+    // dispatch close event
+    settings.set(inputElems);
+    document.dispatchEvent(menuCloseEvent);
     sideNavDOM.classList.remove("open");
-
     isOpen = false;
   };
 
@@ -56,7 +63,8 @@ export function SideNav(components, getEventType) {
       input.addEventListener("input", (ev) => {
         var inputElem = ev.target;
         displayInput(inputElem);
-        timer.time = parseInt(inputElem.value);
+        inputElems[inputElem.id] = parseInt(inputElem.value);
+        // inputElems.inputElem.id = inputElem.value;
       });
     });
   };

@@ -8,9 +8,11 @@ import {
 } from "./ui/interface.js";
 var eventtyp = new eventType();
 var gameflow = new Controller();
+var quizIF = new Quiz(gameflow);
+quizIF.setQuestionType("sum");
+// quizIF.setDifficulty(1);
 var timer = new Timer(gameflow);
-// const settings = new HandleSettings({ timer: timer });
-const sidemenu = SideNav({ timer: timer }, eventtyp);
+const sidemenu = SideNav({ timer: timer, quiz: quizIF }, eventtyp);
 var openMenuBtn = document.querySelector("#opensidemenu");
 var closeMenuBtn = document.querySelector("#closesidemenu");
 openMenuBtn.addEventListener(eventtyp.click, sidemenu.toggle);
@@ -32,24 +34,15 @@ function onConfirm() {
 
 const log = console.log;
 
-var quizIF = new Quiz(gameflow);
-quizIF.setQuestionType("sum");
-quizIF.setDifficutly(1);
-
 var gameIteration;
 gameflow.register("newRound", startQuiz);
+document.addEventListener("menuOpened", resetQuiz);
+
 function startQuiz() {
   timer.reset();
-  /*         if (sidemenu.isOpen()) {
-            log("sidemenu open: "+sidemenu.isOpen())
-            gameflow.quizShouldPause = true
-            timer.reset();
-            return
-        } */
   gameIteration = setTimeout(() => {
     quizIF.nextQuestion();
     quizIF.render();
-
     timer.start();
   }, 2500);
 }
@@ -114,6 +107,7 @@ function resetQuiz() {
     window.location.hash = newHashValueForURL;
   };
   window.addEventListener("hashchange", (ev) => {
+    log(ev);
     ev.preventDefault();
     var hashValue = location.hash.split("#")[1];
     var queries = getQueries(hashValue);

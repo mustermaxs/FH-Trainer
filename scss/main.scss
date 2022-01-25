@@ -129,7 +129,7 @@ body {
     border-radius: 8px;
     border: none;
     height: 1rem;
-    transition: width 100ms linear;
+    transition: width 260ms linear;
 
     &.active {
       width: 0%;
@@ -299,13 +299,15 @@ body {
 
 .confirmwindow {
   display: none;
+  transform: translateX(-50%);
+  left: 50%;
   justify-content: space-around;
   align-items: center;
   flex-direction: column;
   height: 8rem;
   position: absolute;
   background-color: white;
-  width: 100%;
+  width: 80%;
   border-radius: 5px;
   border: transparent;
   box-shadow: 0px 0px 4px gray;

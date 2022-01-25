@@ -33,9 +33,9 @@ class Timer {
         this.gameflow.publish("newRound");
       } else {
         this.render();
-        this.timePastSeconds += 0.1;
+        this.timePastSeconds += 0.25;
       }
-    }, 100);
+    }, 250);
   }
   stop() {
     //

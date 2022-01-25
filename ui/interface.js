@@ -14,19 +14,28 @@ export class Quiz {
     this.answerSection = document.querySelector("#answers");
     this.questionSection = document.querySelector("#question");
     this.componentsAreReady = false;
+    this.difficulty = { min: 2, max: 2 };
 
     /*     this.renderQuestion();
     this.renderAnswers(); */
   }
 
-  setDifficutly(difficulty = 1) {
-    this.questionData.setDifficulty(1);
+  setDifficulty(min, max) {
+    var min = min || 2;
+    var max = max || 3;
+    this.questionData.setDifficulty(min, max);
+  }
+
+  setDigits(digits) {
+    var nrOfDigits = digits || 4;
+    this.questionData.setDigits(nrOfDigits);
   }
 
   setQuestionType(questionType) {
     switch (true) {
       case questionType === "sum":
         this.questionData = estimateSum();
+        this.setDifficulty();
         this.questionTypeSet = true;
         break;
       case questionType === "percent":
@@ -34,8 +43,9 @@ export class Quiz {
         this.questionTypeSet = true;
         break;
       default:
-        this.questionData = null;
-        this.questionTypeSet = false;
+        this.questionData = estimateSum();
+        this.setDifficulty();
+        this.questionTypeSet = true;
         break;
     }
   }

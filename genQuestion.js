@@ -4,17 +4,27 @@ function estimateSum() {
     questionString: null,
     answersList: null,
   };
-  var difficulty = 1;
+  var summandsMin = 2;
+  var summandsMax = 2;
+  var difficulty = 3;
+  var nrOfDigits;
+  var digitsMin;
+  var digitsMax;
 
-  const setDifficulty = (level) => {
-    difficulty = level;
+  const setDifficulty = (min, max) => {
+    summandsMin = min || summandsMin;
+    summandsMax = max || summandsMax;
+  };
+
+  const setDigits = (digits) => {
+    nrOfDigits = digits;
   };
   const genQuestion = () => {
-    var numberOfSummands = getRandomInt(2, difficulty);
+    var numberOfSummands = getRandomInt(summandsMin, summandsMax);
     var summandsList = [];
     var operatorsList = [];
     for (var i = 1; i <= numberOfSummands; i++) {
-      var randomSummand = getRandomInt(1000, 10000);
+      var randomSummand = genNumberWithDigits(nrOfDigits);
       summandsList.push(randomSummand);
       operatorsList.push("+");
     }
@@ -41,10 +51,19 @@ function estimateSum() {
       genQuestion();
     },
     data: data,
-    setDifficulty: (level) => {
-      setDifficulty(level);
+    setDifficulty: (min, max) => {
+      setDifficulty(min, max);
+    },
+    setDigits: (digits) => {
+      setDigits(digits);
     },
   };
+}
+
+function genNumberWithDigits(nrOfDigits) {
+  var min = 10 ** (nrOfDigits - 1);
+  var max = 10 ** nrOfDigits - 1;
+  return getRandomInt(min, max);
 }
 
 function equationToString(config) {
